@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Customer;
 use App\ProductTransaction;
 use App\Product;
 use App\ProductTransactionDetail;
@@ -13,13 +14,15 @@ class ProductTransactionRepository extends BaseRepository
     private $productTransaction;
     private $productTransactionDetail;
     private $product;
+    private $customer;
     public function __construct(ProductTransaction $productTransaction,
                                 ProductTransactionDetail $productTransactionDetail,
-                                Product $product)
+                                Product $product, Customer $customer)
     {
         $this->productTransaction = $productTransaction;
         $this->productTransactionDetail = $productTransactionDetail;
         $this->product = $product;
+        $this->customer = $customer;
     }
 
     public function search($parameters = null, $orders = null, $paginate = false)
@@ -37,6 +40,10 @@ class ProductTransactionRepository extends BaseRepository
 
     public function save(Request $request)
     {
+        $customer = $this->customer->firstOrCreate([
+            'name' => $request->input('customer'),
+        ]);
+        $request->merge(['customer_id' => $customer->id]);
         $request->merge(['status' => 'Proses']);
         return $this->productTransaction->create($request->all());
     }

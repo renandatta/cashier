@@ -50,12 +50,8 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0">
-                                <label for="customer_id">Pelanggan</label>
-                                <select name="customer_id" id="customer_id" class="form-control">
-                                    @foreach($customers as $customer)
-                                        <option value="{{ $customer->id }}" {{ !empty($transaction) && $transaction->customer_id == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
-                                    @endforeach
-                                </select>
+                                <label for="customer">Pelanggan</label>
+                                <input type="text" class="form-control" id="customer" name="customer" placeholder="Nama Pelanggan"value="{{ !empty($transaction) ? $transaction->customer->name : '' }}" @if(!empty($transaction)) readonly @endif>
                             </div>
                             @if(empty($transaction))
                                 <div class="mt-3">
@@ -177,7 +173,7 @@
                     price: price,
                     qty: qty
                 }, function (result) {
-                    $('#list_transaction').append('<tr>\n' +
+                    $('#list_transaction').append('<tr id="row_detail_'+ result.id +'">\n' +
                         '    <td class="p-1">\n' +
                         '        '+ result.product.name +'\n' +
                         '        <div class="text-right">\n' +

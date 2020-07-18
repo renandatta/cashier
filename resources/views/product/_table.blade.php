@@ -7,7 +7,6 @@
             <th>Kategori</th>
             <th>Tag</th>
             <th class=" text-right">Harga</th>
-            <th class=" text-right">Jumlah</th>
             <th class="text-center" width="100px">Perintah</th>
         </tr>
         </thead>
@@ -23,7 +22,6 @@
                 <td class="text-nowrap">{{ $product->product_category->name }}</td>
                 <td>{{ $product->tag }}</td>
                 <td class="text-nowrap text-right">{{ format_number($product->price) }}</td>
-                <td class="text-nowrap text-right">{{ format_number($product->stock) . ' ' . $product->unit }}</td>
                 <td class="text-center p-0">
                     <a href="{{ route('product.info', 'id=' . $product->id) }}" class="btn btn-sm btn-secondary">Ubah</a>
                 </td>
