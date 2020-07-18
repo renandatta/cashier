@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(CategorySeeder::class);
-        factory(Product::class, 40)->create();
-        factory(RawMaterial::class, 100)->create();
-        $this->call(CustomerSeeder::class);
-        factory(User::class, 5)->create()->each(function ($user) {
-            $staff = factory(Staff::class)->make();
-            $user->staff()->save($staff);
-        });
+//        factory(Product::class, 40)->create();
+//        factory(RawMaterial::class, 100)->create();
+//        $this->call(CustomerSeeder::class);
+//        factory(User::class, 5)->create()->each(function ($user) {
+//            $staff = factory(Staff::class)->make();
+//            $user->staff()->save($staff);
+//        });
     }
 }

@@ -14,6 +14,9 @@ Route::get('logout', 'AuthController@logout')->name('logout');
 
 /// ========== dashboard
 Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+Route::post('dashboard/transaction', 'DashboardController@transaction')->name('dashboard.transaction');
+Route::post('dashboard/popular_product', 'DashboardController@popular_product')->name('dashboard.popular_product');
+Route::post('dashboard/warning_raw_material', 'DashboardController@warning_raw_material')->name('dashboard.warning_raw_material');
 
 /// ========== product_category
 Route::get('product_category', 'ProductCategoryController@index')->name('product_category');

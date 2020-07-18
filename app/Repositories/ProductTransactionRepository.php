@@ -6,6 +6,7 @@ use App\ProductTransaction;
 use App\Product;
 use App\ProductTransactionDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductTransactionRepository extends BaseRepository
 {
@@ -73,5 +74,25 @@ class ProductTransactionRepository extends BaseRepository
         $product->save();
         $detail->delete();
         return $detail;
+    }
+
+    public function count_transaction($parameters = null, $orders = null, $paginate = false)
+    {
+        $details = $this->productTransactionDetail->with('product');
+        $details = $this->setParameter($details, $parameters);
+        $details = $this->setOrder($details, $orders);
+        return $paginate == false ? $details->get() : $details->paginate($paginate);
+    }
+
+    public function popular_product($month)
+    {
+        return $this->productTransactionDetail->select(DB::raw('count(*) as count'), 'product_id')
+            ->with('product')
+            ->join('product_transactions', 'product_transactions.id', '=', 'product_transaction_details.product_transaction_id')
+            ->where('product_transactions.date', 'like', $month . '-%')
+            ->groupBy('product_id')
+            ->orderBy('count', 'desc')
+            ->limit(10)
+            ->get();
     }
 }
