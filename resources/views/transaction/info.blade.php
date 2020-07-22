@@ -101,41 +101,8 @@
                 <div class="col-md-8 col-6">
                     <div class="card">
                         <div class="card-body" style="height: calc(100vh - 140px);overflow-y: scroll;">
-                            <div class="row">
-                                @php($category_id = '')
-                                @foreach($products as $product)
-                                    @if($category_id != $product->product_category_id)
-                                        <div class="col-12">
-                                            <h3>{{ $product->product_category->name }}</h3>
-                                        </div>
-                                    @endif
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-body p-1">
-                                                <h5>{{ $product->name }}<br>Rp.{{ format_number($product->price) }}</h5>
-                                                <hr class="mt-1 mb-2">
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <button class="btn btn-secondary btn-sm" onclick="decreaseQty('{{ $product->id }}')">-</button>
-                                                            </div>
-                                                            <input type="text" class="form-control form-control-sm text-center" id="qty_product_{{ $product->id }}" value="1" readonly>
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-secondary btn-sm" onclick="increaseQty('{{ $product->id }}')">+</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-8 text-right">
-                                                        <button type="button" class="btn btn-sm btn-primary" onclick="addProduct('{{ $product->id }}', '{{ $product->price }}')">Tambahkan</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @php($category_id = $product->product_category_id)
-                                @endforeach
-                            </div>
+                            <input type="text" class="form-control form-control-lg mb-3" id="search_product" placeholder="Cari Nama Produk" autofocus>
+                            <div id="list_product"></div>
                         </div>
                     </div>
                 </div>
@@ -148,6 +115,17 @@
     @push('scripts')
         <script>
             let totalTransaction = parseFloat("{{ $transaction->product_transaction_details->sum('total') }}");
+            function searchProduct()
+            {
+                $.post("{{ route('transaction.search_product') }}", {
+                    _token: '{{ csrf_token() }}',
+                    name: $('#search_product').val()
+                }, function (result) {
+                    $('#list_product').html(result);
+                }).fail(function (xhr) {
+                    console.log(xhr.responseText);
+                });
+            }
             function decreaseQty(id) {
                 let qtyProduct = $('#qty_product_' + id);
                 let qty = qtyProduct.val();
@@ -204,6 +182,26 @@
                     console.log(xhr.responseText);
                 });
             }
+
+            $('#search_product').keydown(function (e) {
+                let productId = $('.product_id:first').val();
+                let price = $('.product_id:first').attr('data-price');
+
+                if (e.which === 13) {
+                    addProduct(productId, price);
+                    $('#search_product').val('');
+                    searchProduct();
+                } else
+                if (e.which == 38) {
+                    increaseQty(productId);
+                } else
+                if (e.which == 40) {
+                    decreaseQty(productId);
+                } else {
+                    searchProduct();
+                }
+            });
+            searchProduct();
         </script>
     @endpush
 @endif

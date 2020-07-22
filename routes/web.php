@@ -81,6 +81,7 @@ Route::post('purchase/detail/delete', 'PurchaseController@detail_delete')->name(
 Route::get('transaction', 'TransactionController@index')->name('transaction');
 Route::post('transaction/search', 'TransactionController@search')->name('transaction.search');
 Route::get('transaction/info', 'TransactionController@info')->name('transaction.info');
+Route::post('transaction/search_product', 'TransactionController@search_product')->name('transaction.search_product');
 Route::post('transaction/save', 'TransactionController@save')->name('transaction.save');
 Route::post('transaction/delete', 'TransactionController@delete')->name('transaction.delete');
 

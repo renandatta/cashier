@@ -75,11 +75,23 @@ class TransactionController extends Controller
             $this->productTransactionRepository->find($request->get('id')) : [];
         if (!empty($transaction) && $transaction->status == 'Selesai')
             return redirect()->route('transaction.print', 'id=' . $transaction->id);
+        $customers = $this->customerRepository->search();
+        return view('transaction.info', compact('transaction', 'customers'));
+    }
+
+    public function search_product(Request $request)
+    {
         $orders = [];
         array_push($orders, ['column' => 'product_category_id', 'direction' => 'asc']);
-        $products = $request->has('id') ? $this->productRepository->search(null, $orders) : [];
-        $customers = $this->customerRepository->search();
-        return view('transaction.info', compact('transaction', 'products', 'customers'));
+        $parameters = [];
+        if ($request->has('name') && $request->input('name') != '') {
+            array_push($parameters, [
+                'column' => 'name', 'value' => '%' . $request->input('name') . '%', 'operator' => 'like'
+            ]);
+        }
+        $products = $this->productRepository->search($parameters, $orders);
+        if ($request->has('ajax')) return $products;
+        return view('transaction._product_list', compact('products'));
     }
 
     public function save(Request $request)
